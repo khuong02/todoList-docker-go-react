@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 
 import axios from "axios";
 
@@ -8,6 +8,7 @@ import Paper from "@mui/material/Paper";
 import FromInput from "../components/todo/formInput/FormInput";
 import TodoList from "../components/todo/list/TodoList";
 import FeatureTodo from "../components/todo/feature/FeatureTodo";
+import { TodoContext } from "../feature/todo/TodoContext";
 
 const FILTER_OPTION_ALL = "ALL";
 const FILTER_OPTION_ACTIVE = "ACTIVE";
@@ -20,33 +21,15 @@ const filterOptions = [
 ];
 
 const TodoApp = () => {
+  const { todoList } = useContext(TodoContext);
   const [todo, setTodo] = useState("");
-  const [todos, setTodos] = useState([]);
-  const [filterTodo, setFilterTodo] = useState(todos);
+  const [todos, setTodos] = useState(todoList);
+  const [filterTodo, setFilterTodo] = useState(todoList);
   const [option, setOption] = useState("All");
 
   useEffect(() => {
-    const getTodos = async () => {
-      try {
-        const res = await axios.get("http://localhost:9000/todo");
-
-        setTodos(
-          res.data.data.Todos.map((todo) => ({
-            ...todo,
-            isCompleted: false,
-            isUpdate: false,
-          }))
-        );
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    getTodos();
-  }, []);
-
-  useEffect(() => {
-    setFilterTodo(todos);
-  }, [todos]);
+    setFilterTodo(todoList);
+  }, [todoList]);
 
   useEffect(() => {
     const switchOptionFilter = (option) => {

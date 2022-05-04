@@ -1,7 +1,5 @@
 export const initialState = {
   todoList: [],
-  update: false,
-  complete: false,
 };
 
 export const actions = {

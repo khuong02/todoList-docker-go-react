@@ -1,9 +1,10 @@
 import { actions } from "../action/todoAction";
 
 const reducer = (state, action) => {
+  // console.log(state);
   switch (action.type) {
     case actions.SET_TODO: {
-      return (state.todoList = [...action.todoList]);
+      return { todoList: action.todoList };
     }
     case actions.UPDATE_TODO_ITEM: {
       const updatedTodoList = state.todoList.map((todoItem) =>
