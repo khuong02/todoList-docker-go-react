@@ -111,8 +111,6 @@ const TodoApp = () => {
     ]);
   };
 
-  console.log(todos);
-
   const isCheckedFilter = (filter) => {
     filterOptions.map((item) => {
       item.isChecked = item.name.toUpperCase() === filter ? true : false;
