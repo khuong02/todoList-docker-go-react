@@ -22,7 +22,7 @@ const TodoList = (props) => {
 
   const deleteTodo = async (id) => {
     try {
-      setTodos(todos.filter((items) => items.id !== id));
+      setTodos([...todos].filter((items) => items.id !== id));
       await axios.delete(`http://localhost:9000/todo/delete/${id}`);
     } catch (err) {
       console.log(err);
@@ -33,13 +33,13 @@ const TodoList = (props) => {
     setTextUpdate(obj);
   };
 
-  const updateTodo = async (id) => {
+  const updateTodo = async (todo) => {
     try {
-      const params_update = textUpdate.find((obj) => obj.id === id);
+      const params_update = textUpdate.find((obj) => obj.id === todo.id);
 
       setTodos(
-        todos.map((items) => {
-          if (items.id === id) {
+        [...todos].map((items) => {
+          if (items.id === todo.id) {
             items.params = params_update.text;
           }
           return items;
@@ -75,7 +75,7 @@ const TodoList = (props) => {
               {!todo.isUpdate && (
                 <ListItemIcon>
                   <IconButton
-                    onClick={() => isFeatureFunc(todo.id, "isCompleted")}
+                    onClick={() => isFeatureFunc(todo, "isCompleted")}
                   >
                     {!todo.isCompleted ? (
                       <RadioButtonUncheckedIcon sx={{ fontSize: "35px" }} />
@@ -99,10 +99,10 @@ const TodoList = (props) => {
                 <IconButton
                   onClick={() => {
                     if (todo.isUpdate) {
-                      updateTodo(todo.id);
+                      updateTodo(todo);
                     }
 
-                    isFeatureFunc(todo.id, "isUpdate");
+                    isFeatureFunc(todo, "isUpdate");
                   }}
                   title={todo.isUpdate ? "Update" : "Fix todo"}
                 >
@@ -112,7 +112,7 @@ const TodoList = (props) => {
                   onClick={() =>
                     !todo.isUpdate
                       ? deleteTodo(todo.id)
-                      : isFeatureFunc(todo.id, "isUpdate")
+                      : isFeatureFunc(todo, "isUpdate")
                   }
                   title={todo.isUpdate ? "Cancel" : "Delete todo"}
                 >

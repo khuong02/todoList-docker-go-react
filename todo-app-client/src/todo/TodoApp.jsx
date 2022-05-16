@@ -22,7 +22,7 @@ const filterOptions = [
 const TodoApp = () => {
   const [todo, setTodo] = useState("");
   const [todos, setTodos] = useState([]);
-  const [filterTodo, setFilterTodo] = useState(todos);
+  const [filterTodo, setFilterTodo] = useState([]);
   const [option, setOption] = useState("All");
 
   useEffect(() => {
@@ -45,26 +45,30 @@ const TodoApp = () => {
   }, []);
 
   useEffect(() => {
-    setFilterTodo(todos);
+    setFilterTodo([...todos]);
   }, [todos]);
 
   useEffect(() => {
+    const filterTodos = (state, bool) => {
+      return state.filter((i) => i.isCompleted === bool);
+    };
+
     const switchOptionFilter = (option) => {
       option = option.toUpperCase();
       switch (option) {
         case FILTER_OPTION_ACTIVE: {
           isCheckedFilter(FILTER_OPTION_ACTIVE);
-          return setFilterTodo(todos.filter((todo) => !todo.isCompleted));
+          return setFilterTodo(filterTodos([...todos], false));
         }
 
         case FILTER_OPTION_COMPLETED: {
           isCheckedFilter(FILTER_OPTION_COMPLETED);
-          return setFilterTodo(todos.filter((todo) => todo.isCompleted));
+          return setFilterTodo(filterTodos([...todos], true));
         }
 
         default: {
           isCheckedFilter(FILTER_OPTION_ALL);
-          return setFilterTodo(todos);
+          return setFilterTodo([...todos]);
         }
       }
     };
@@ -94,24 +98,24 @@ const TodoApp = () => {
   };
 
   //isFeatureFunc is check isCompleted and isUpdate
-  const isFeatureFunc = (id, option) => {
-    setTodos(
-      todos.map((item) => {
-        if (item.id === id) item[option] = !item[option];
-
-        return item;
-      })
-    );
+  const isFeatureFunc = (todo, option) => {
+    const isCheck = todo[option];
+    const idx = todos.indexOf(todo);
+    setTodos([
+      ...todos.slice(0, idx),
+      {
+        ...todo,
+        [option]: !isCheck,
+      },
+      ...todos.slice(idx + 1),
+    ]);
   };
+
+  console.log(todos);
 
   const isCheckedFilter = (filter) => {
     filterOptions.map((item) => {
-      if (item.name.toUpperCase() === filter) {
-        item.isChecked = true;
-      } else {
-        item.isChecked = false;
-      }
-
+      item.isChecked = item.name.toUpperCase() === filter ? true : false;
       return item;
     });
   };
